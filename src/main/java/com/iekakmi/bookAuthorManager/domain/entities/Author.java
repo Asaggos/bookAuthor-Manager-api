@@ -8,6 +8,7 @@ import java.util.List;
 
 
 @Entity
+@Table(name = "authors")
 public class Author {
 
     @Id
@@ -15,7 +16,7 @@ public class Author {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "nationality")

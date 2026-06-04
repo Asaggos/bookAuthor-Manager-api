@@ -1,21 +1,27 @@
 package com.iekakmi.bookAuthorManager.domain.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "books")
 public class Book {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "isbn")
     private String isbn;
 
+    @NotBlank(message = "Title required")
+    @Column(name = "title", nullable = false)
     private String title;
 
+    @Column(name = "category")
     private String category;
 
+    @Column(name = "publicationYear")
     private int publicationYear;
 
     @ManyToMany
