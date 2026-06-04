@@ -1,31 +1,25 @@
-package com.iekakmi.bookAuthorManager.domain.entities;
+package com.iekakmi.bookAuthorManager.business.DTOs;
 
-import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
+public class AuthorDTO {
 
-@Entity
-public class Author {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private int id;
 
-    @Column(name = "name")
+    @NotNull(message = "Name cannot be null!")
+    @NotBlank(message = "Name cannot be empty!")
     private String name;
 
-    @Column(name = "nationality")
     private String nationality;
 
-    @Column(name = "birthDate")
     private LocalDate birthDate;
 
-    @ManyToMany(mappedBy = "authors")
-    private List<Book> books = new ArrayList<>();
+    private List<String> bookIsbn;
+
 
 
     public int getId() {return id;}
@@ -40,6 +34,6 @@ public class Author {
     public LocalDate getBirthDate() {return birthDate;}
     public void setBirthDate(LocalDate birthDate) {this.birthDate = birthDate;}
 
-    public List<Book> getBooks() {return books;}
-    public void setBooks(List<Book> books) {this.books = books;}
+    public List<String> getBookIsbn() {return bookIsbn;}
+    public void setBookIsbn(List<String> bookIsbn) {this.bookIsbn = bookIsbn;}
 }
