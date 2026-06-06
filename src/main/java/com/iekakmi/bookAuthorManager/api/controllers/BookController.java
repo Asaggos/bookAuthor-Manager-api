@@ -45,6 +45,7 @@ public class BookController {
     }
 
     //INSERT A LIST OF AUTHORS IN A BOOK (METHOD: POST) /books/{isbn}/authors*    *A LIST OF AUTHORS IDS
+    @PostMapping("/{isbn}/authors")
     public BookDTO assignAuthorsToBook(@PathVariable String isbn,@RequestBody List<Integer> authorsIds){
         return bookService.assignAuthorToBook(isbn,authorsIds);
     }
