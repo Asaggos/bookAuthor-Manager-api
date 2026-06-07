@@ -3,7 +3,6 @@ package com.iekakmi.bookAuthorManager.business.Services;
 import com.iekakmi.bookAuthorManager.business.DTOs.AuthorDTO;
 import com.iekakmi.bookAuthorManager.business.DTOs.BookDTO;
 import com.iekakmi.bookAuthorManager.domain.entities.Author;
-import com.iekakmi.bookAuthorManager.domain.entities.Book;
 import com.iekakmi.bookAuthorManager.domain.repositories.AuthorRepo;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +31,15 @@ public class AuthorService {
                     dto.setNationality(ath.getNationality());
                     dto.setBirthDate(ath.getBirthDate());
 
-                    dto.setBookIsbn(
+                    dto.setBooks(
                             ath.getBooks()
                             .stream()
-                            .map(Book::getIsbn)
-                            .collect(Collectors.toList())
+                            .map(book -> {
+                                BookDTO bdto = new BookDTO();
+                                bdto.setIsbn(book.getIsbn());
+                                bdto.setTitle(book.getTitle());
+                                return bdto;
+                            }).collect(Collectors.toList())
                     );
 
                     return dto;
@@ -50,11 +53,17 @@ public class AuthorService {
         AuthorDTO dto = new AuthorDTO();
         dto.setId(ath.getId());
         dto.setName(ath.getName());
-        dto.setBookIsbn(
+        dto.setNationality(ath.getNationality());
+        dto.setBirthDate(ath.getBirthDate());
+        dto.setBooks(
                 ath.getBooks()
-                .stream()
-                .map(Book::getIsbn)
-                .collect(Collectors.toList())
+                        .stream()
+                        .map(book -> {
+                            BookDTO bdto = new BookDTO();
+                            bdto.setIsbn(book.getIsbn());
+                            bdto.setTitle(book.getTitle());
+                            return bdto;
+                        }).collect(Collectors.toList())
         );
         return dto;
     }

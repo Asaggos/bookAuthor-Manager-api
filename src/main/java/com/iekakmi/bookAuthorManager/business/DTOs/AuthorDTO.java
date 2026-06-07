@@ -18,7 +18,7 @@ public class AuthorDTO {
 
     private LocalDate birthDate;
 
-    private List<String> bookIsbn;
+    private List<BookDTO> books;
 
 
 
@@ -34,6 +34,6 @@ public class AuthorDTO {
     public LocalDate getBirthDate() {return birthDate;}
     public void setBirthDate(LocalDate birthDate) {this.birthDate = birthDate;}
 
-    public List<String> getBookIsbn() {return bookIsbn;}
-    public void setBookIsbn(List<String> bookIsbn) {this.bookIsbn = bookIsbn;}
+    public List<BookDTO> getBooks() {return books;}
+    public void setBooks(List<BookDTO> books) {this.books = books;}
 }

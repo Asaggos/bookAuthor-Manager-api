@@ -52,6 +52,8 @@ public class BookService {
         BookDTO dto = new BookDTO();
         dto.setIsbn(book.getIsbn());
         dto.setTitle(book.getTitle());
+        dto.setCategory(book.getCategory());
+        dto.setPublicationYear(book.getPublicationYear());
         dto.setAuthorsId(
                 book.getAuthors()
                 .stream()
@@ -69,6 +71,11 @@ public class BookService {
         book.setTitle(dto.getTitle());
         book.setCategory(dto.getCategory());
         book.setPublicationYear(dto.getPublicationYear());
+
+        if (dto.getAuthorsId() != null && !dto.getAuthorsId().isEmpty()) {
+            List<Author> authors = authorRepo.findAllById(dto.getAuthorsId());
+            book.setAuthors(authors);
+        }
 
         bookRepo.save(book);
         return book.getIsbn();
