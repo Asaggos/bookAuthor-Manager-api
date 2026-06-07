@@ -5,8 +5,10 @@ import com.iekakmi.bookAuthorManager.domain.entities.Author;
 import com.iekakmi.bookAuthorManager.domain.entities.Book;
 import com.iekakmi.bookAuthorManager.domain.repositories.AuthorRepo;
 import com.iekakmi.bookAuthorManager.domain.repositories.BookRepo;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
@@ -60,7 +62,8 @@ public class BookService {
     }
 
     //CREATE BOOK
-    public BookDTO createBook(BookDTO dto){
+    @Transactional
+    public String createBook(@Valid BookDTO dto){
         Book book = new Book();
         book.setIsbn(dto.getIsbn());
         book.setTitle(dto.getTitle());
@@ -68,12 +71,13 @@ public class BookService {
         book.setPublicationYear(dto.getPublicationYear());
 
         bookRepo.save(book);
-        return dto;
+        return book.getIsbn();
     }
 
     //UPDATE BOOK
-    public BookDTO updateBook(String isbn,BookDTO dto){
-        Book book = bookRepo.findById(isbn)
+    @Transactional
+    public BookDTO updateBook(@Valid BookDTO dto){
+        Book book = bookRepo.findById(dto.getIsbn())
                 .orElseThrow(()-> new RuntimeException("Book not found!"));
 
         book.setTitle(dto.getTitle());
@@ -85,12 +89,14 @@ public class BookService {
     }
 
     //DELETE BOOK
+    @Transactional
     public void deleteBook(String isbn){
         bookRepo.deleteById(isbn);
     }
 
 
     // /books/{id}/authors
+    @Transactional
     public BookDTO assignAuthorToBook(String isbn,List<Integer> authorId){
         Book book = bookRepo.findById(isbn)
                 .orElseThrow(() -> new RuntimeException("Book not found!"));

@@ -5,8 +5,10 @@ import com.iekakmi.bookAuthorManager.business.DTOs.BookDTO;
 import com.iekakmi.bookAuthorManager.domain.entities.Author;
 import com.iekakmi.bookAuthorManager.domain.entities.Book;
 import com.iekakmi.bookAuthorManager.domain.repositories.AuthorRepo;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
@@ -42,7 +44,7 @@ public class AuthorService {
     }
 
     //FIND AUTHOR BY ID
-    public AuthorDTO findById(int id){
+    public AuthorDTO findAuthorById(int id){
         Author ath = authorRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Author not found with id: " + id));
         AuthorDTO dto = new AuthorDTO();
@@ -58,7 +60,8 @@ public class AuthorService {
     }
 
     //CREATE AUTHOR
-    public AuthorDTO createAuthor(AuthorDTO dto){
+    @Transactional
+    public int createAuthor(@Valid AuthorDTO dto){
         Author ath = new Author();
         ath.setName(dto.getName());
         ath.setNationality(dto.getNationality());
@@ -66,12 +69,13 @@ public class AuthorService {
 
         Author saved = authorRepo.save(ath);
         dto.setId(saved.getId());
-        return dto;
+        return saved.getId();
     }
 
     //UPDATE AUTHOR
-    public AuthorDTO updateAuthor(int id, AuthorDTO dto){
-        Author ath = authorRepo.findById(id)
+    @Transactional
+    public AuthorDTO updateAuthor(@Valid AuthorDTO dto){
+        Author ath = authorRepo.findById(dto.getId())
                 .orElseThrow(()-> new RuntimeException("Author not found"));
 
         ath.setName(dto.getName());
@@ -83,11 +87,13 @@ public class AuthorService {
     }
 
     //DELETE AUTHOR
+    @Transactional
     public void deleteAuthor(int id){
         authorRepo.deleteById(id);
     }
 
     // /authors/{id}/books
+    @Transactional
     public List<BookDTO> findBookByAuthorId(int id){
         Author ath = authorRepo.findById(id)
                 .orElseThrow(()-> new RuntimeException("Author not found!"));

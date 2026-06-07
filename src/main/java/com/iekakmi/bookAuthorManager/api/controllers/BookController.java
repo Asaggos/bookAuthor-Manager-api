@@ -2,7 +2,9 @@ package com.iekakmi.bookAuthorManager.api.controllers;
 
 import com.iekakmi.bookAuthorManager.business.DTOs.BookDTO;
 import com.iekakmi.bookAuthorManager.business.Services.BookService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,43 +13,50 @@ import java.util.List;
 @RequestMapping("/books")
 public class BookController {
 
-    @Autowired
-    private BookService bookService;
+    private final BookService bookService;
+
+    public BookController(BookService bookService) {this.bookService = bookService;}
 
     //GET ALL BOOKS (METHOD: GET) /books
     @GetMapping
-    public List<BookDTO> getBooks(){
-        return bookService.getBooks();
+    public ResponseEntity<?> getBooks(){
+        List<BookDTO> response = bookService.getBooks();
+        return ResponseEntity.ok(response);
     }
 
     //FIND BOOK BY ISBN (METHOD: GET) /books/{isbn}
     @GetMapping("/{isbn}")
-    public BookDTO getBookByIsbn(@PathVariable String isbn){
-        return bookService.findByIsbn(isbn);
+    public ResponseEntity<?> getBookByIsbn(@PathVariable String isbn){
+        BookDTO response = bookService.findByIsbn(isbn);
+        return ResponseEntity.ok(response);
     }
 
     //CREATE BOOK (METHOD: POST) /books
     @PostMapping
-    public BookDTO createBook(@RequestBody BookDTO bookDTO){
-        return bookService.createBook(bookDTO);
+    public ResponseEntity<?> createBook(@Valid @RequestBody BookDTO bookDTO){
+        String isbn = bookService.createBook(bookDTO);
+        return new ResponseEntity<>(isbn, HttpStatus.CREATED);
     }
 
     //UPDATE BOOK (METHOD: PUT) books/{isbn}
-    @PutMapping("/{isbn}")
-    public BookDTO updateBook(@PathVariable String isbn,@RequestBody BookDTO bookDTO){
-        return bookService.updateBook(isbn,bookDTO);
+    @PutMapping
+    public ResponseEntity<?> updateBook(@Valid @RequestBody BookDTO bookDTO){
+        BookDTO updated = bookService.updateBook(bookDTO);
+        return ResponseEntity.ok(updated);
     }
 
     //DELETE BOOK (METHOD: DELETE) /books/{isbn}
     @DeleteMapping("/{isbn}")
-    public void deleteBook(@PathVariable String isbn){
+    public ResponseEntity<?> deleteBook(@Valid @PathVariable String isbn){
         bookService.deleteBook(isbn);
+        return ResponseEntity.ok().build();
     }
 
     //INSERT A LIST OF AUTHORS IN A BOOK (METHOD: POST) /books/{isbn}/authors*    *A LIST OF AUTHORS IDS
     @PostMapping("/{isbn}/authors")
-    public BookDTO assignAuthorsToBook(@PathVariable String isbn,@RequestBody List<Integer> authorsIds){
-        return bookService.assignAuthorToBook(isbn,authorsIds);
+    public ResponseEntity<?> assignAuthorsToBook(@Valid @PathVariable String isbn,@RequestBody List<Integer> authorsIds){
+        BookDTO response = bookService.assignAuthorToBook(isbn,authorsIds);
+        return ResponseEntity.ok(response);
     }
 
 }
